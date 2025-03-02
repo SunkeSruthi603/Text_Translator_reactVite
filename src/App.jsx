@@ -1,14 +1,18 @@
 import { useState } from "react";
 import axios from "axios";
-
+import { LoaderCircle} from "lucide-react";
 
 function App() 
 {
   const [textInput, setTextInput ] = useState("")
   const [selectValue, setSelectValue] = useState("")
   const [result, setResult] = useState("")
+  const [loading, setLoading] = useState(false)
+
+
 
   const handleTextTranslation = async () => {
+    setLoading(true)
     try{
       const options = {
         method: 'POST',
@@ -26,10 +30,12 @@ function App()
         }
       };
       const response = await axios.request(options)
+      setLoading(false)
       console.log("Translation response:", response?.data?.data?.translations?.[Number(0)]?.translatedText)
       setResult(response?.data?.data?.translations?.[Number(0)]?.translatedText)
     }
     catch(error){
+      setLoading(false)
       console.log("Translation error:", error?.data) }
     }
   console.log(textInput)
@@ -67,7 +73,13 @@ function App()
         </div>
 
         <button className="bg-slate-700 text-slate-100 mx-auto w-[500px] py-2 rounded-lg
-        cursor-pointer" onClick={handleTextTranslation}>Translate</button>
+        cursor-pointer flex items-center justify-center" onClick={handleTextTranslation}>
+          {
+            loading ? 
+            (<LoaderCircle className="animate-spin"/> )
+            : "Translate"
+          }
+        </button>
       </div>
     </div>
   );
